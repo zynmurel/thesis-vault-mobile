@@ -125,6 +125,19 @@ export default function TabLayout() {
         name="account"
         options={{
           title: "Account",
+          headerShown: true, // Show the header if it's hidden
+          headerStyle: {
+            height: 45, // 👈 Adjusts header height
+            elevation: 0, // ✅ Removes shadow on Android
+            shadowOpacity: 0, // Optional: fallback for iOS
+            borderBottomWidth: 0, // Optional: fallback for iOS
+            backgroundColor: "#f5e05d", // Header background color
+          },
+          headerTitleStyle: {
+            fontSize: 20, // 👈 Adjusts text size
+            fontWeight: "bold", // optional,
+            color: "#f5e05d",
+          },
           tabBarIcon: ({ color }) => (
             <FontAwesome6 name="user-circle" size={24} color={color} />
           ),
