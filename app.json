@@ -14,7 +14,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#f5e05d"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.zynmurel.thesisvaultmobile"

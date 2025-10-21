@@ -1,22 +1,37 @@
 import { router, Tabs } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Platform } from "react-native";
 
 import { HapticTab } from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
+import { baseUrl } from "@/constants/consts";
 import { useUserStore } from "@/hooks/user";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 export default function TabLayout() {
-  const { setUserId } = useUserStore();
+  const { setUserId, userId } = useUserStore();
+  const [notificationCount, setNotificationCount] = useState<number | null>(
+    null
+  );
   const handleLogout = async () => {
     await AsyncStorage.removeItem("user_id");
     router.replace("/login");
+  };
+
+  const fetchNotificationCount = async (id: string) => {
+    const res = await axios.post(
+      baseUrl + "/api/mobile/student/get-notification-count",
+      {
+        studentId: id,
+      }
+    );
+    setNotificationCount(res?.data?.count || 0);
   };
 
   useEffect(() => {
@@ -35,6 +50,22 @@ export default function TabLayout() {
 
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    // Fetch immediately on mount
+    fetchNotificationCount(userId);
+
+    // ✅ Refetch every 10 seconds
+    const interval = setInterval(() => {
+      fetchNotificationCount(userId);
+    }, 5000); // 10,000ms = 10 seconds
+
+    // Cleanup on unmount
+    return () => clearInterval(interval);
+  }, [userId]);
+
   return (
     <Tabs
       screenOptions={{
@@ -116,6 +147,7 @@ export default function TabLayout() {
             fontWeight: "bold", // optional,
             color: "#f5e05d",
           },
+          tabBarBadge: notificationCount || undefined,
           tabBarIcon: ({ color }) => (
             <Ionicons name="notifications" size={24} color={color} />
           ),
