@@ -1,24 +1,43 @@
 import { baseUrl, injectedJavaScript } from "@/constants/consts";
 import { useUserStore } from "@/hooks/user";
-import { StyleSheet, View } from "react-native";
+import { useCallback, useRef, useState } from "react";
+import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 
 import WebView from "react-native-webview";
 
 export default function TabTwoScreen() {
   const { userId } = useUserStore();
-  console.log(userId, `${baseUrl}/mobile/${userId}/notifications`)
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    // Reload WebView after small delay
+    setTimeout(() => {
+      setRefreshing(false);
+      webViewRef.current?.reload();
+    }, 1000);
+  }, []);
+
+  const webViewRef = useRef<WebView>(null);
   return (
-    <View style={styles.view}>
-      <WebView
-        style={styles.container}
-        source={{
-          uri: `${baseUrl}/mobile/${userId}/notifications`,
-        }}
-        scalesPageToFit={false} // For Android
-        javaScriptEnabled={true}
-        injectedJavaScript={injectedJavaScript} // For iOS
-      />
-    </View>
+    <ScrollView
+      contentContainerStyle={{ flex: 1 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <View style={styles.view}>
+        <WebView
+          style={styles.container}
+          ref={webViewRef}
+          source={{
+            uri: `${baseUrl}/mobile/${userId}/notifications`,
+          }}
+          scalesPageToFit={false} // For Android
+          javaScriptEnabled={true}
+          injectedJavaScript={injectedJavaScript} // For iOS
+        />
+      </View>
+    </ScrollView>
   );
 }
 

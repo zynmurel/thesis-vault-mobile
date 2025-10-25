@@ -39,17 +39,18 @@
     "experiments": {
       "typedRoutes": true
     },
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "e7877d77-d5ca-4a3a-9a9b-840524882c4a"
-      }
-    },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
       "url": "https://u.expo.dev/e7877d77-d5ca-4a3a-9a9b-840524882c4a"
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "87dd5666-d6c4-4b62-8650-1855e3d9f34e"
+      }
+    },
+    "owner": "kent_karl_palomas"
   }
 }
